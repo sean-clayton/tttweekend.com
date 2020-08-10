@@ -22,6 +22,7 @@ module.exports = {
     description: "TTT Weekends",
     siteUrl: "https://www.tttweekends.com/",
     discord: "https://discord.gg/y269UUF",
+    gmod: "steam://connect/play.tttweekends.com",
     workshop:
       "https://steamcommunity.com/sharedfiles/filedetails/?id=1507759289",
     rules: [

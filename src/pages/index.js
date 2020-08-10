@@ -111,19 +111,20 @@ function NotPlaying({ discord }) {
   );
 }
 
-function Playing() {
+function Playing({ gmod }) {
   return (
     <CTA
       heading="It's the weekend!"
       description="Let's play some TTT!"
-      target="steam://connect/play.tttweekends.com"
+      target={gmod}
     />
   );
 }
 
 export default function Home() {
-  const weekend =
-    isWeekend(new Date()) || differenceInHours(nextPlayTime, new Date()) <= 1;
+  const weekend = useRef(
+    isWeekend(new Date()) || differenceInHours(nextPlayTime, new Date()) <= 1
+  );
 
   const data = useStaticQuery(graphql`
     query {
@@ -132,6 +133,7 @@ export default function Home() {
           title
           discord
           workshop
+          gmod
           rules {
             name
             description
@@ -185,8 +187,9 @@ export default function Home() {
 
         <title>TTT Weekends</title>
       </Helmet>
-      <main tw="font-inter min-h-screen bg-blue-900">
-        <section tw="bg-gray-900 relative">
+
+      <main tw="font-inter min-h-screen bg-gray-900">
+        <section tw="relative">
           <main tw="lg:relative">
             <div tw="mx-auto max-w-7xl w-full pt-16 pb-20 text-center lg:py-48 lg:text-left">
               <div tw="px-4 lg:w-1/2 sm:px-8 xl:pr-16">
@@ -231,10 +234,55 @@ export default function Home() {
           tw="py-24 bg-blue-500 shadow-xl border-t border-solid border-blue-400"
           style={{ backgroundImage: pattern1Url }}
         >
-          {weekend ? <Playing /> : <NotPlaying discord={metadata.discord} />}
+          {weekend.current ? (
+            <Playing gmod={metadata.gmod} />
+          ) : (
+            <NotPlaying discord={metadata.discord} />
+          )}
         </section>
 
-        <section style={{ backgroundImage: pattern2Url }}>
+        <section tw="bg-yellow-50 shadow-xl">
+          <div tw="max-w-screen-xl mx-auto pt-12 pb-16 sm:pt-16 sm:pb-20 px-4 sm:px-6 lg:pt-20 lg:pb-28 lg:px-8">
+            <h2
+              tw="text-3xl leading-9 font-extrabold text-yellow-900 text-center"
+              style={{ textShadow: "0 1px 0 rgb(255 255 255 / 50%)" }}
+            >
+              Quick &amp; easy setup
+            </h2>
+            <div tw="prose md:text-lg mt-4 text-gray-900">
+              <ol>
+                <li>
+                  Install <a href="#">Garry's Mod</a>
+                </li>
+                <li>
+                  Install <a href="">Counter-Strike: Source</a>. If you already
+                  own it, just install it from your Steam library. Otherwise,
+                  you can install it by following the instructions on{" "}
+                  <a href="https://gmodcontent.com/">gmodcontent.com</a>
+                </li>
+                <li>
+                  <mark
+                    tw="bg-yellow-200"
+                    style={{ textShadow: "0 1px 0 rgb(255 255 255 / 50%)" }}
+                  >
+                    <strong>
+                      Subscribe to{" "}
+                      <a href={metadata.workshop}>
+                        our Steam Workshop collection
+                      </a>
+                    </strong>
+                  </mark>
+                </li>
+                <li>
+                  <a href={metadata.discord}>Join our Discord!</a>
+                </li>
+                <li>Have fun!</li>
+              </ol>
+            </div>
+          </div>
+        </section>
+
+        <section tw="bg-red-800" style={{ backgroundImage: pattern2Url }}>
           <div tw="max-w-screen-xl mx-auto pt-12 pb-16 sm:pt-16 sm:pb-20 px-4 sm:px-6 lg:pt-20 lg:pb-28 lg:px-8">
             <h2
               tw="text-3xl leading-9 font-extrabold text-gray-50 text-center"
@@ -242,7 +290,7 @@ export default function Home() {
             >
               Some Ground Rules
             </h2>
-            <div tw="mt-6 border-t-2 border-blue-300 pt-10">
+            <div tw="mt-6 border-t-2 border-red-300 pt-10">
               <dl tw="md:grid md:grid-cols-2 md:gap-8">
                 <div tw="md:mb-0">
                   {arrayFirstHalf.map(rule => (
@@ -251,7 +299,7 @@ export default function Home() {
                         {rule.name}
                       </dt>
                       <dd tw="mt-2">
-                        <p tw="text-base leading-6 text-blue-200">
+                        <p tw="text-base leading-6 text-red-200">
                           {rule.description}
                         </p>
                       </dd>
@@ -265,7 +313,7 @@ export default function Home() {
                         {rule.name}
                       </dt>
                       <dd tw="mt-2">
-                        <p tw="text-base leading-6 text-blue-200">
+                        <p tw="text-base leading-6 text-red-200">
                           {rule.description}
                         </p>
                       </dd>
@@ -276,6 +324,29 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <footer tw="p-8">
+          <div tw="mx-auto prose text-center text-blue-200">
+            Site created by{" "}
+            <a tw="text-yellow-200!" href="https://keybase.io/seanclayton">
+              S. P. O. Clayton
+            </a>
+            <br />
+            <a
+              tw="text-yellow-200!"
+              href="https://github.com/sean-clayton/tttweekend.com"
+            >
+              Site source.
+            </a>{" "}
+            Licensed under the{" "}
+            <a
+              tw="text-yellow-200!"
+              href="https://opensource.org/licenses/0BSD"
+            >
+              BSD Zero Clause license.
+            </a>
+          </div>
+        </footer>
       </main>
     </>
   );
