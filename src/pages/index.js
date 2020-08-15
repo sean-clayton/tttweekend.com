@@ -122,8 +122,15 @@ function Playing({ gmod }) {
 }
 
 export default function Home() {
-  const weekend =
-    isWeekend(new Date()) || differenceInHours(nextPlayTime, new Date()) <= 1;
+  const [weekend, setWeekend] = useState(
+    isWeekend(new Date()) || differenceInHours(nextPlayTime, new Date()) <= 1
+  );
+
+  useEffect(() => {
+    setWeekend(
+      isWeekend(new Date()) || differenceInHours(nextPlayTime, new Date()) <= 1
+    );
+  }, [weekend]);
 
   const data = useStaticQuery(graphql`
     query {
