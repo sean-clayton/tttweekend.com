@@ -122,9 +122,7 @@ function Playing({ gmod }) {
 }
 
 export default function Home() {
-  const [weekend, setWeekend] = useState(
-    isWeekend(new Date()) || differenceInHours(nextPlayTime, new Date()) <= 1
-  );
+  const [weekend, setWeekend] = useState(false);
 
   useEffect(() => {
     setWeekend(
