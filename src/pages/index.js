@@ -122,7 +122,7 @@ function Playing({ gmod }) {
 }
 
 export default function Home() {
-  const [weekend, setWeekend] = useState(false);
+  const [weekend, setWeekend] = useState(null);
 
   useEffect(() => {
     setWeekend(
@@ -238,11 +238,13 @@ export default function Home() {
           tw="py-24 bg-blue-500 shadow-xl border-t border-solid border-blue-400"
           style={{ backgroundImage: pattern1Url }}
         >
-          {weekend ? (
-            <Playing gmod={metadata.gmod} />
-          ) : (
-            <NotPlaying discord={metadata.discord} />
-          )}
+          {weekend !== null ? (
+            weekend ? (
+              <Playing gmod={metadata.gmod} />
+            ) : (
+              <NotPlaying discord={metadata.discord} />
+            )
+          ) : null}
         </section>
 
         <section tw="bg-yellow-50 shadow-xl">
