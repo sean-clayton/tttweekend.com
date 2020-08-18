@@ -130,7 +130,7 @@ export default function Home() {
     setWeekend(
       isWeekend(new Date()) || differenceInHours(nextPlayTime, new Date()) <= 1
     );
-  }, [weekend]);
+  }, []);
 
   const data = useStaticQuery(graphql`
     query {
