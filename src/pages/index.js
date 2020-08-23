@@ -164,7 +164,7 @@ export default function Home() {
         />
         <meta
           name="description"
-          content="Consistent Trouble in Terrorist Town gaming sessions every weekend."
+          content="Play TTT every weekend! Consistent Trouble in Terrorist Town gaming sessions every weekend."
         />
         <link
           rel="apple-touch-icon"
