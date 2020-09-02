@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useStaticQuery, graphql } from "gatsby";
 import "twin.macro";
@@ -124,7 +124,7 @@ function Playing({ gmod }) {
 export default function Home() {
   const [weekend, setWeekend] = useState(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setWeekend(
       isWeekend(new Date()) || differenceInHours(nextPlayTime, new Date()) <= 1
     );
