@@ -164,7 +164,7 @@ export default function Home() {
         />
         <meta
           name="description"
-          content="Play TTT every weekend! Consistent Trouble in Terrorist Town gaming sessions every weekend."
+          content="Looking for a group to play TTT with? Play TTT every weekend with us! Regularly scheduled Trouble in Terrorist Town gaming sessions every weekend."
         />
         <link
           rel="apple-touch-icon"
@@ -204,7 +204,7 @@ export default function Home() {
                   Play TTT <em>every weekend</em>
                 </h2>
                 <p tw="mt-3 max-w-md mx-auto text-lg text-gray-50 sm:text-xl md:mt-5 md:max-w-3xl">
-                  Consistent Trouble in Terrorist Town gaming sessions{" "}
+                  Need a group to play TTT with? Join TTT Weekends for regular Trouble in Terrorist Town gaming sessions{" "}
                   <em>every weekend</em>. Easy to set up and easy to play!
                 </p>
                 <div tw="mt-10 sm:flex sm:justify-center lg:justify-start">
