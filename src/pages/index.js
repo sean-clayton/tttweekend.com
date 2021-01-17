@@ -1,14 +1,16 @@
-import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet";
-import { useStaticQuery, graphql } from "gatsby";
+import { graphql, useStaticQuery } from "gatsby";
 import "twin.macro";
 import isWeekend from "date-fns/isWeekend";
 import differenceInHours from "date-fns/differenceInHours";
-import { intervalToDuration, formatDuration } from "date-fns";
+import { formatDuration, intervalToDuration } from "date-fns";
 
-const pattern1Url = `url("data:image/svg+xml,%3Csvg width='100' height='20' viewBox='0 0 100 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M21.184 20c.357-.13.72-.264 1.088-.402l1.768-.661C33.64 15.347 39.647 14 50 14c10.271 0 15.362 1.222 24.629 4.928.955.383 1.869.74 2.75 1.072h6.225c-2.51-.73-5.139-1.691-8.233-2.928C65.888 13.278 60.562 12 50 12c-10.626 0-16.855 1.397-26.66 5.063l-1.767.662c-2.475.923-4.66 1.674-6.724 2.275h6.335zm0-20C13.258 2.892 8.077 4 0 4V2c5.744 0 9.951-.574 14.85-2h6.334zM77.38 0C85.239 2.966 90.502 4 100 4V2c-6.842 0-11.386-.542-16.396-2h-6.225zM0 14c8.44 0 13.718-1.21 22.272-4.402l1.768-.661C33.64 5.347 39.647 4 50 4c10.271 0 15.362 1.222 24.629 4.928C84.112 12.722 89.438 14 100 14v-2c-10.271 0-15.362-1.222-24.629-4.928C65.888 3.278 60.562 2 50 2 39.374 2 33.145 3.397 23.34 7.063l-1.767.662C13.223 10.84 8.163 12 0 12v2z' fill='white' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E")`;
+const pattern1Url =
+  `url("data:image/svg+xml,%3Csvg width='100' height='20' viewBox='0 0 100 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M21.184 20c.357-.13.72-.264 1.088-.402l1.768-.661C33.64 15.347 39.647 14 50 14c10.271 0 15.362 1.222 24.629 4.928.955.383 1.869.74 2.75 1.072h6.225c-2.51-.73-5.139-1.691-8.233-2.928C65.888 13.278 60.562 12 50 12c-10.626 0-16.855 1.397-26.66 5.063l-1.767.662c-2.475.923-4.66 1.674-6.724 2.275h6.335zm0-20C13.258 2.892 8.077 4 0 4V2c5.744 0 9.951-.574 14.85-2h6.334zM77.38 0C85.239 2.966 90.502 4 100 4V2c-6.842 0-11.386-.542-16.396-2h-6.225zM0 14c8.44 0 13.718-1.21 22.272-4.402l1.768-.661C33.64 5.347 39.647 4 50 4c10.271 0 15.362 1.222 24.629 4.928C84.112 12.722 89.438 14 100 14v-2c-10.271 0-15.362-1.222-24.629-4.928C65.888 3.278 60.562 2 50 2 39.374 2 33.145 3.397 23.34 7.063l-1.767.662C13.223 10.84 8.163 12 0 12v2z' fill='white' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E")`;
 
-const pattern2Url = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='32' viewBox='0 0 16 32'%3E%3Cg fill='black' fill-opacity='0.1'%3E%3Cpath fill-rule='evenodd' d='M0 24h4v2H0v-2zm0 4h6v2H0v-2zm0-8h2v2H0v-2zM0 0h4v2H0V0zm0 4h2v2H0V4zm16 20h-6v2h6v-2zm0 4H8v2h8v-2zm0-8h-4v2h4v-2zm0-20h-6v2h6V0zm0 4h-4v2h4V4zm-2 12h2v2h-2v-2zm0-8h2v2h-2V8zM2 8h10v2H2V8zm0 8h10v2H2v-2zm-2-4h14v2H0v-2zm4-8h6v2H4V4zm0 16h6v2H4v-2zM6 0h2v2H6V0zm0 24h2v2H6v-2z'/%3E%3C/g%3E%3C/svg%3E")`;
+const pattern2Url =
+  `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='32' viewBox='0 0 16 32'%3E%3Cg fill='black' fill-opacity='0.1'%3E%3Cpath fill-rule='evenodd' d='M0 24h4v2H0v-2zm0 4h6v2H0v-2zm0-8h2v2H0v-2zM0 0h4v2H0V0zm0 4h2v2H0V4zm16 20h-6v2h6v-2zm0 4H8v2h8v-2zm0-8h-4v2h4v-2zm0-20h-6v2h6V0zm0 4h-4v2h4V4zm-2 12h2v2h-2v-2zm0-8h2v2h-2V8zM2 8h10v2H2V8zm0 8h10v2H2v-2zm-2-4h14v2H0v-2zm4-8h6v2H4V4zm0 16h6v2H4v-2zM6 0h2v2H6V0zm0 24h2v2H6v-2z'/%3E%3C/g%3E%3C/svg%3E")`;
 
 function ExternalLinkIcon(props) {
   return (
@@ -36,7 +38,7 @@ function nextWeekdayDate(date, dayInWeek) {
 }
 
 const nextPlayTime = new Date(
-  nextWeekdayDate(new Date(), 6).setUTCHours(16, 30, 0, 0)
+  nextWeekdayDate(new Date(), 6).setUTCHours(16, 30, 0, 0),
 );
 
 function getDuration() {
@@ -44,7 +46,7 @@ function getDuration() {
     intervalToDuration({
       end: new Date(),
       start: nextPlayTime,
-    })
+    }),
   );
 
   return duration;
@@ -94,7 +96,7 @@ function CTA({ heading, description, target }) {
 function NotPlaying({ discord }) {
   const [duration, setDuration] = useState(getDuration());
 
-  const updateDuration = newVal => {
+  const updateDuration = (newVal) => {
     setDuration(newVal);
   };
 
@@ -126,7 +128,7 @@ export default function Home() {
 
   useLayoutEffect(() => {
     setWeekend(
-      isWeekend(new Date()) || differenceInHours(nextPlayTime, new Date()) <= 1
+      isWeekend(new Date()) || differenceInHours(nextPlayTime, new Date()) <= 1,
     );
   }, []);
 
@@ -152,7 +154,7 @@ export default function Home() {
   const arrayFirstHalf = metadata.rules.slice(0, halfwayThrough);
   const arraySecondHalf = metadata.rules.slice(
     halfwayThrough,
-    metadata.rules.length
+    metadata.rules.length,
   );
 
   return (
@@ -195,7 +197,9 @@ export default function Home() {
       <main tw="font-inter min-h-screen bg-gray-900">
         <section tw="relative">
           <main tw="lg:relative">
-            <div tw="mx-auto max-w-7xl w-full pt-16 pb-20 text-center lg:py-48 lg:text-left">
+            <div
+              tw="mx-auto max-w-7xl w-full pt-16 pb-20 text-center lg:py-48 lg:text-left"
+            >
               <div tw="px-4 lg:w-1/2 sm:px-8 xl:pr-16">
                 <h2
                   tw="text-4xl tracking-tight leading-10 font-extrabold text-blue-50 sm:text-5xl sm:leading-none md:text-6xl lg:text-5xl xl:text-6xl"
@@ -203,8 +207,11 @@ export default function Home() {
                 >
                   Play TTT <em>every weekend</em>
                 </h2>
-                <p tw="mt-3 max-w-md mx-auto text-lg text-gray-50 sm:text-xl md:mt-5 md:max-w-3xl">
-                  Need a group to play TTT with? Join TTT Weekends for regular Trouble in Terrorist Town gaming sessions{" "}
+                <p
+                  tw="mt-3 max-w-md mx-auto text-lg text-gray-50 sm:text-xl md:mt-5 md:max-w-3xl"
+                >
+                  Need a group to play TTT with? Join TTT Weekends for regular
+                  Trouble in Terrorist Town gaming sessions{" "}
                   <em>every weekend</em>. Easy to set up and easy to play!
                 </p>
                 <div tw="mt-10 sm:flex sm:justify-center lg:justify-start">
@@ -220,7 +227,9 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div tw="relative w-full h-64 sm:h-72 md:h-96 lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 lg:h-full">
+            <div
+              tw="relative w-full h-64 sm:h-72 md:h-96 lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 lg:h-full"
+            >
               <img
                 tw="absolute inset-0 w-full h-full object-cover"
                 style={{
@@ -238,17 +247,23 @@ export default function Home() {
           tw="py-24 bg-blue-500 shadow-xl border-t border-solid border-blue-400"
           style={{ backgroundImage: pattern1Url }}
         >
-          {weekend !== null ? (
-            weekend ? (
-              <Playing gmod={metadata.gmod} />
-            ) : (
-              <NotPlaying discord={metadata.discord} />
+          {weekend !== null
+            ? (
+              weekend
+                ? (
+                  <Playing gmod={metadata.gmod} />
+                )
+                : (
+                  <NotPlaying discord={metadata.discord} />
+                )
             )
-          ) : null}
+            : null}
         </section>
 
         <section tw="bg-yellow-50 shadow-xl">
-          <div tw="max-w-screen-xl mx-auto pt-12 pb-16 sm:pt-16 sm:pb-20 px-4 sm:px-6 lg:pt-20 lg:pb-28 lg:px-8">
+          <div
+            tw="max-w-screen-xl mx-auto pt-12 pb-16 sm:pt-16 sm:pb-20 px-4 sm:px-6 lg:pt-20 lg:pb-28 lg:px-8"
+          >
             <h2
               tw="text-3xl leading-9 font-extrabold text-yellow-900 text-center"
               style={{ textShadow: "0 1px 0 rgb(255 255 255 / 50%)" }}
@@ -258,12 +273,18 @@ export default function Home() {
             <div tw="prose md:text-lg mt-4 text-gray-900">
               <ol>
                 <li>
-                  Install <a href="#">Garry's Mod</a>
+                  Install <a
+                    href="https://store.steampowered.com/app/4000/Garrys_Mod/"
+                  >
+                    Garry's Mod
+                  </a>
                 </li>
                 <li>
-                  Install <a href="">Counter-Strike: Source</a>. If you already
-                  own it, just install it from your Steam library. Otherwise,
-                  you can install it by following the instructions on{" "}
+                  Install <a href="">
+                    Counter-Strike: Source
+                  </a>. If you already own it, just install it from your Steam
+                  library. Otherwise, you can install it by following the
+                  instructions on{" "}
                   <a href="https://gmodcontent.com/">gmodcontent.com</a>
                 </li>
                 <li>
@@ -289,7 +310,9 @@ export default function Home() {
         </section>
 
         <section tw="bg-red-800" style={{ backgroundImage: pattern2Url }}>
-          <div tw="max-w-screen-xl mx-auto pt-12 pb-16 sm:pt-16 sm:pb-20 px-4 sm:px-6 lg:pt-20 lg:pb-28 lg:px-8">
+          <div
+            tw="max-w-screen-xl mx-auto pt-12 pb-16 sm:pt-16 sm:pb-20 px-4 sm:px-6 lg:pt-20 lg:pb-28 lg:px-8"
+          >
             <h2
               tw="text-3xl leading-9 font-extrabold text-gray-50 text-center"
               style={{ textShadow: "0 1px 0 rgb(0 0 0 / 50%)" }}
@@ -299,7 +322,7 @@ export default function Home() {
             <div tw="mt-6 border-t-2 border-red-300 pt-10">
               <dl tw="md:grid md:grid-cols-2 md:gap-8">
                 <div tw="md:mb-0">
-                  {arrayFirstHalf.map(rule => (
+                  {arrayFirstHalf.map((rule) => (
                     <div key={rule.name} tw="mb-12">
                       <dt tw="text-lg leading-6 font-bold text-gray-50">
                         {rule.name}
@@ -313,7 +336,7 @@ export default function Home() {
                   ))}
                 </div>
                 <div tw="mt-12 md:mt-0">
-                  {arraySecondHalf.map(rule => (
+                  {arraySecondHalf.map((rule) => (
                     <div key={rule.name} tw="mb-12">
                       <dt tw="text-lg leading-6 font-bold text-gray-50">
                         {rule.name}
@@ -343,7 +366,8 @@ export default function Home() {
               href="https://github.com/sean-clayton/tttweekend.com"
             >
               Site source.
-            </a>{" "}
+            </a>
+            {" "}
             Licensed under the{" "}
             <a
               tw="text-yellow-200!"
