@@ -27,6 +27,11 @@ module.exports = {
       "https://steamcommunity.com/sharedfiles/filedetails/?id=1507759289",
     rules: [
       {
+        name: "Do not kill as soon as the round starts.",
+        description:
+          "To keep things fun, do not kill anyone within 30 seconds of the round starting.",
+      },
+      {
         name: "Be polite",
         description: "We all want to have a fun time here.",
       },
@@ -44,11 +49,6 @@ module.exports = {
         name: "Prepare your mods beforehand",
         description:
           "It's really simple and quick. We also will let you know if you need to ahead of time in Discord.",
-      },
-      {
-        name: "Do not kill as soon as the round starts.",
-        description:
-          "To keep things fun, do not kill anyone within a minute of the round starting.",
       },
     ],
   },
